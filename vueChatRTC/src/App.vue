@@ -25,7 +25,6 @@
 
 <script>
 import io from 'socket.io-client';
-import SimplePeer from 'simple-peer';
 export default {
   data() {
     return {
