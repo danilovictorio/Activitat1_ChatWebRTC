@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <h1>Benvingut</h1>
     <h3>Posa el nom:</h3>
     <input v-model="nom" type="text">
@@ -25,6 +26,7 @@
 
 <script>
 import io from 'socket.io-client';
+
 export default {
   data() {
     return {
@@ -35,13 +37,14 @@ export default {
       usuariActiu: null,
       xats: {},
       missatge: '',
-      socket: null,
+      socket: io('http://localhost:3000'),
       peer: null,
     };
   },
   methods: {
     connectar() {
-      this.socket = io('http://localhost:3000');
+      console.log('connectar');
+      
 
       this.peer = new SimplePeer({
         initiator: false,
@@ -57,9 +60,10 @@ export default {
         this.connectat = true;
       });
 
-      this.socket.on('nou-usuari', (nouUsuari) => {
-        this.usuaris.push(nouUsuari);
-      });
+      this.socket.on('nou-usuari', ({ id, nom }) => {
+  this.usuaris.push({ id, nom });
+});
+
 
       this.socket.on('signal', (nom, signal) => {
         const user = this.usuaris.find((u) => u.nom === nom);
@@ -73,6 +77,7 @@ export default {
         this.xats[userId] = this.xats[userId] || [];
         this.xats[userId].push({ sender, text, timestamp: Date.now() });
       });
+
     },
     iniciarXat(userId) {
       this.xatActiu = true;
@@ -107,5 +112,3 @@ export default {
   },
 };
 </script>
-
-
